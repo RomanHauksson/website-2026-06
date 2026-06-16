@@ -14,5 +14,8 @@
   "dependencies": {
     "@astrojs/mdx": "^6.0.3",
     "astro": "^6.4.4"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.5.0"
   }
 }
