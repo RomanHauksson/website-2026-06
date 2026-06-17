@@ -5,16 +5,18 @@
    plugin) so it can rotate on hover while the <a> hitbox stays put. */
 .prose a .link-inner {
   display: inline-block;
-  background-color: var(--color-gray-200);
+  background-color: var(--color-gray-300);
   border-radius: var(--radius-sm);
-  padding: 0.125rem 0.25rem;
-  transition: transform 200ms ease;
+  padding: 0rem 0.25rem;
+  transition: all 200ms ease;
 }
 
 .prose a:hover .link-inner {
-  transform: rotate(5deg);
+  transform: rotate(5deg) scale(1.1);
+  box-shadow: 0 0 16px 0 rgba(60, 60, 60, 0.3);
 }
 
 .prose a[data-spin="ccw"]:hover .link-inner {
-  transform: rotate(-5deg);
+  transform: rotate(-5deg) scale(1.1);
+  box-shadow: 0 0 16px 0 rgba(60, 60, 60, 0.3);
 }
