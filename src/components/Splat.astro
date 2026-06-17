@@ -14,8 +14,8 @@ const camera = new THREE.PerspectiveCamera(
 	0.01,
 	1000,
 );
-const renderer = new THREE.WebGLRenderer({ canvas });
-renderer.setClearColor("hsl(220, 14.3%, 95.9%)", 1);
+const renderer = new THREE.WebGLRenderer({ canvas, alpha: true });
+renderer.setClearColor(0x000000, 0);
 
 function resize() {
 	const width = canvas.clientWidth;

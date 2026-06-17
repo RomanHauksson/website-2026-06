@@ -1,15 +1,51 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 
+body {
+  --grid-size: 1rem;
+  --grid-color: var(--color-gray-300);
+  background-image:
+    linear-gradient(to right, var(--grid-color) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--grid-color) 1px, transparent 1px);
+  background-size: var(--grid-size) var(--grid-size);
+}
+
+/* Halo the text in the background color (gray-100) so it stays legible
+   where it overlaps the grid lines. */
+.prose h1, .prose p {
+  text-shadow:
+  0 0 0.2rem var(--color-gray-100),
+  0 0 0.2rem var(--color-gray-100),
+  0 0 0.2rem var(--color-gray-100),
+  0 0 0.2rem var(--color-gray-100),
+  0 0 0.2rem var(--color-gray-100),
+  0 0 0.2rem var(--color-gray-100),
+  0 0 0.2rem var(--color-gray-100),
+  0 0 0.2rem var(--color-gray-100);
+}
+.prose p .link-inner {
+  text-shadow: none;
+}
+
 /* The visible chip lives in an inner span (injected by the rehypeSpinLinks
    plugin) so it can rotate on hover while the <a> hitbox stays put. */
 .prose a .link-inner {
   display: inline-block;
-  background-color: var(--color-gray-300);
+  background-color: var(--color-gray-200);
+  border: 1px dashed var(--color-gray-400);
   border-radius: var(--radius-sm);
-  padding: 0rem 0.25rem;
+  padding: 0rem 0.4rem;
   transition: all 200ms ease;
-  line-height: 1.5;
+  line-height: 1.4;
+  box-shadow:
+  0 0 0.2rem var(--color-gray-100),
+  0 0 0.2rem var(--color-gray-100),
+  0 0 0.2rem var(--color-gray-100),
+  0 0 0.2rem var(--color-gray-100),
+  0 0 0.2rem var(--color-gray-100),
+  0 0 0.2rem var(--color-gray-100),
+  0 0 0.2rem var(--color-gray-100),
+  0 0 0.2rem var(--color-gray-100);
 }
 
 .prose a:hover .link-inner {
