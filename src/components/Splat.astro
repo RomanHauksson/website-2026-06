@@ -1,30 +1,40 @@
 ---
 ---
 
-<canvas id="splat-canvas"></canvas>
+<canvas class="block w-full h-auto aspect-square" id="splat-canvas"></canvas>
 
 <script>
 import * as THREE from "three";
 import { SparkRenderer, SplatMesh } from "@sparkjsdev/spark";
 const scene = new THREE.Scene();
+const canvas = document.getElementById("splat-canvas") as HTMLCanvasElement;
 const camera = new THREE.PerspectiveCamera(
 	60,
-	window.innerWidth / window.innerHeight,
+	canvas.clientWidth / canvas.clientHeight,
 	0.01,
 	1000,
 );
-const canvas = document.getElementById("splat-canvas") as HTMLCanvasElement;
 const renderer = new THREE.WebGLRenderer({ canvas });
-renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.setClearColor(0xffffff, 1);
+
+function resize() {
+	const width = canvas.clientWidth;
+	const height = canvas.clientHeight;
+	renderer.setPixelRatio(window.devicePixelRatio);
+	renderer.setSize(width, height, false);
+	camera.aspect = width / height;
+	camera.updateProjectionMatrix();
+}
+resize();
+window.addEventListener("resize", resize);
 
 const spark = new SparkRenderer({ renderer });
 scene.add(spark);
 
-const splatURL = "/Roman.splat";
+const splatURL = "/Roman.sog";
 const butterfly = new SplatMesh({ url: splatURL });
 butterfly.quaternion.set(1, 0, 0, 0);
-butterfly.position.set(0, 0, -3);
+butterfly.position.set(0, 0, -1.8);
 scene.add(butterfly);
 
 renderer.setAnimationLoop(function animate(time) {
