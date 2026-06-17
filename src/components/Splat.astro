@@ -37,8 +37,20 @@ butterfly.quaternion.set(1, 0, 0, 0);
 butterfly.position.set(0, 0, -1.8);
 scene.add(butterfly);
 
+// Rotate back and forth around the vertical axis between -45 and 45 degrees.
+// A sine drives the angle, which eases the motion at each extreme.
+const baseQuat = butterfly.quaternion.clone();
+const yAxis = new THREE.Vector3(0, 1, 0);
+const swingQuat = new THREE.Quaternion();
+
+const MAX_ANGLE = Math.PI / 4; // 45 degrees
+const SPEED = 1; // radians per second of the driving sine
+
 renderer.setAnimationLoop(function animate(time) {
+	const angle = MAX_ANGLE * Math.sin(time * 0.001 * SPEED);
+	swingQuat.setFromAxisAngle(yAxis, angle);
+	butterfly.quaternion.copy(swingQuat).multiply(baseQuat);
+
 	renderer.render(scene, camera);
-	butterfly.rotation.y += 0.01;
 });
 </script>
