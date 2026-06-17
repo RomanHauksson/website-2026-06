@@ -32,14 +32,18 @@ const spark = new SparkRenderer({ renderer });
 scene.add(spark);
 
 const splatURL = "/Roman.sog";
-const butterfly = new SplatMesh({ url: splatURL });
-butterfly.quaternion.set(1, 0, 0, 0);
-butterfly.position.set(0, 0, -1.8);
-scene.add(butterfly);
+const roman = new SplatMesh({ url: splatURL });
+roman.quaternion.set(1, 0, 0, 0);
+roman.position.set(0, 0, -1.8);
+scene.add(roman);
+
+// Raise the camera and aim it at the model.
+camera.position.set(0, 0.7, 0);
+camera.lookAt(roman.position);
 
 // Rotate back and forth around the vertical axis between -45 and 45 degrees.
 // A sine drives the angle, which eases the motion at each extreme.
-const baseQuat = butterfly.quaternion.clone();
+const baseQuat = roman.quaternion.clone();
 const yAxis = new THREE.Vector3(0, 1, 0);
 const swingQuat = new THREE.Quaternion();
 
@@ -49,7 +53,7 @@ const SPEED = 1; // radians per second of the driving sine
 renderer.setAnimationLoop(function animate(time) {
 	const angle = MAX_ANGLE * Math.sin(time * 0.001 * SPEED);
 	swingQuat.setFromAxisAngle(yAxis, angle);
-	butterfly.quaternion.copy(swingQuat).multiply(baseQuat);
+	roman.quaternion.copy(swingQuat).multiply(baseQuat);
 
 	renderer.render(scene, camera);
 });
