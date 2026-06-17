@@ -8,13 +8,12 @@ import { Font } from "astro:assets";
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<Font cssVariable="--font-space-grotesk" />
 		<link rel="icon" href="/favicon.png" />
 		<meta name="generator" content={Astro.generator} />
 		<title>Roman Hauksson-Neill</title>
 	</head>
-	<body class="prose mx-auto px-6 my-6 prose-a:no-underline prose-a:font-normal prose-a:text-gray-900 prose-a:inline-block font-(family-name:--font-space-grotesk) bg-gray-100 text-gray-900 [&_h1]:text-center">
+	<body class="prose mx-auto px-6 my-14 prose-a:no-underline prose-a:font-normal prose-a:text-gray-900 prose-a:inline-block font-(family-name:--font-space-grotesk) bg-gray-100 text-gray-900 prose-h1:text-center prose-h1:text-6xl prose-p:text-2xl prose-p:leading-10">
 		<slot />
 	</body>
 </html>
