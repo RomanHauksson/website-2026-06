@@ -5,6 +5,7 @@
 
 <script>
 import * as THREE from "three";
+import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { SparkRenderer, SplatMesh } from "@sparkjsdev/spark";
 const scene = new THREE.Scene();
 const canvas = document.getElementById("splat-canvas") as HTMLCanvasElement;
@@ -41,8 +42,27 @@ scene.add(roman);
 camera.position.set(0, 0.7, 0);
 camera.lookAt(roman.position);
 
-// Rotate back and forth around the vertical axis between -45 and 45 degrees.
-// A sine drives the angle, which eases the motion at each extreme.
+// Let the user click/drag (or touch/drag) to orbit the camera around the
+// model. OrbitControls is the approach recommended by Spark's docs and
+// examples, since SplatMesh is a regular THREE.Object3D.
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.target.copy(roman.position);
+controls.enableDamping = true; // smooth, weighted feel with momentum
+controls.enablePan = false; // dragging only rotates, never slides the model away
+controls.enableZoom = false; // keep the framing fixed and let the page scroll
+controls.update();
+
+// Pause the idle swing while the user is actively dragging, then resume it.
+let isInteracting = false;
+controls.addEventListener("start", () => {
+	isInteracting = true;
+});
+controls.addEventListener("end", () => {
+	isInteracting = false;
+});
+
+// Idle animation: rotate back and forth around the vertical axis between -45
+// and 45 degrees. A sine drives the angle, easing the motion at each extreme.
 const baseQuat = roman.quaternion.clone();
 const yAxis = new THREE.Vector3(0, 1, 0);
 const swingQuat = new THREE.Quaternion();
@@ -50,11 +70,22 @@ const swingQuat = new THREE.Quaternion();
 const MAX_ANGLE = Math.PI / 4; // 45 degrees
 const SPEED = 1; // radians per second of the driving sine
 
-renderer.setAnimationLoop(function animate(time) {
-	const angle = MAX_ANGLE * Math.sin(time * 0.001 * SPEED);
-	swingQuat.setFromAxisAngle(yAxis, angle);
-	roman.quaternion.copy(swingQuat).multiply(baseQuat);
+// Advance the swing's own clock only while idle, so it resumes from where it
+// left off (no jump) after the user releases the model.
+const clock = new THREE.Clock();
+let swingTime = 0;
 
+renderer.setAnimationLoop(function animate() {
+	if (!isInteracting) {
+		swingTime += clock.getDelta();
+		const angle = MAX_ANGLE * Math.sin(swingTime * SPEED);
+		swingQuat.setFromAxisAngle(yAxis, angle);
+		roman.quaternion.copy(swingQuat).multiply(baseQuat);
+	} else {
+		clock.getDelta(); // keep the clock current so it doesn't jump on resume
+	}
+
+	controls.update(); // required for damping
 	renderer.render(scene, camera);
 });
 </script>
