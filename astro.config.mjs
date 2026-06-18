@@ -5,6 +5,8 @@ import mdx from '@astrojs/mdx';
 
 import tailwindcss from '@tailwindcss/vite';
 
+import icon from 'astro-icon';
+
 // Wraps each link's contents in a <span> so the span can be rotated on hover
 // while the <a> itself stays put — giving the link a stable hitbox. Also tags
 // successive links with alternating spin directions.
@@ -33,7 +35,7 @@ function rehypeSpinLinks() {
 
 // https://astro.build/config
 export default defineConfig({
-  integrations: [mdx({ rehypePlugins: [rehypeSpinLinks] })],
+  integrations: [mdx({ rehypePlugins: [rehypeSpinLinks] }), icon()],
   fonts: [{
     provider: fontProviders.google(),
     name: "Space Grotesk",
