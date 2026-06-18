@@ -58,7 +58,7 @@ body {
 .prose a .link-inner {
   display: inline-block;
   background-color: var(--chip-bg);
-  border: 1px dashed var(--chip-border);
+  border: 2px dashed var(--chip-border);
   border-radius: var(--radius-sm);
   padding: 0rem 0.4rem;
   transition: all 200ms ease;
