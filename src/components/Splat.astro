@@ -55,6 +55,11 @@ controls.enablePan = false; // dragging only rotates, never slides the model awa
 controls.enableZoom = false; // keep the framing fixed and let the page scroll
 controls.update();
 
+// The figure may never be seen from more than this far off its front, so the
+// user can't spin around to the back. This budget is shared between the camera
+// orbit and the idle body swing: whatever the swing uses, the camera can't.
+const FRONT_LIMIT = Math.PI / 2; // 90 degrees
+
 // Pause the idle swing while the user is actively dragging, then resume it.
 let isInteracting = false;
 controls.addEventListener("start", () => {
@@ -77,16 +82,32 @@ const SPEED = 1; // radians per second of the driving sine
 // left off (no jump) after the user releases the model.
 const clock = new THREE.Clock();
 let swingTime = 0;
+let swingAngle = 0; // the body's current rotation away from facing front
 
 renderer.setAnimationLoop(function animate() {
+	const azimuth = controls.getAzimuthalAngle(); // camera offset from front
+
 	if (!isInteracting) {
 		swingTime += clock.getDelta();
-		const angle = MAX_ANGLE * Math.sin(swingTime * SPEED);
+		let angle = MAX_ANGLE * Math.sin(swingTime * SPEED);
+		// Don't let the idle swing turn the body so far that the (fixed) camera
+		// ends up looking past 90° off the front.
+		angle = THREE.MathUtils.clamp(
+			angle,
+			azimuth - FRONT_LIMIT,
+			azimuth + FRONT_LIMIT,
+		);
+		swingAngle = angle;
 		swingQuat.setFromAxisAngle(yAxis, angle);
 		roman.quaternion.copy(swingQuat).multiply(baseQuat);
 	} else {
 		clock.getDelta(); // keep the clock current so it doesn't jump on resume
 	}
+
+	// Constrain the camera orbit relative to wherever the body is currently
+	// facing, so the camera + swing combined never exposes the back.
+	controls.minAzimuthAngle = swingAngle - FRONT_LIMIT;
+	controls.maxAzimuthAngle = swingAngle + FRONT_LIMIT;
 
 	controls.update(); // required for damping
 	renderer.render(scene, camera);
